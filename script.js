@@ -1,7 +1,24 @@
-// Firebase SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment } 
-from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA-qYLlMKvKNiWpnI8MJopb66upMJXsi4Q",
+  authDomain: "my-blog-b2e82.firebaseapp.com",
+  projectId: "my-blog-b2e82",
+  storageBucket: "my-blog-b2e82.firebasestorage.app",
+  messagingSenderId: "1036391165706",
+  appId: "1:1036391165706:web:c745462a77876afa0dd4f3",
+  measurementId: "G-CLCK96ZMLR"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
@@ -71,5 +88,6 @@ function toggleDark() {
 }
 
 showPosts();
+
 
 
