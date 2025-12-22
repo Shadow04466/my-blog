@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>My Earning Blog</title>
-  <meta name="description" content="Read professional blogs on software testing and technology">
+  <meta name="description" content="Professional blogs on software testing and technology">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<!-- 🔥 IMPORTANT FIX -->
 <body class="d-flex flex-column min-vh-100">
 
 <!-- ======================
@@ -28,10 +27,10 @@
 <!-- ======================
      HERO
 ====================== -->
-<header class="bg-light py-5">
-  <div class="container text-center">
+<header class="bg-light py-4">
+  <div class="container">
     <h1 class="fw-bold">Latest Blog Posts</h1>
-    <p class="text-muted mt-2">
+    <p class="text-muted">
       Professional articles on software testing & technology
     </p>
   </div>
@@ -40,7 +39,7 @@
 <!-- ======================
      TOP AD
 ====================== -->
-<div class="container">
+<div class="container my-4">
   <div class="ad-container">
     <span class="ad-label">Advertisement</span>
     <div class="ad-box">AdSense Ad Here</div>
@@ -48,21 +47,32 @@
 </div>
 
 <!-- ======================
-     CATEGORY FILTER
+     CATEGORY FILTER (FIXED)
 ====================== -->
-<div class="container my-4">
-  <div id="categories" class="text-center">
-    <button class="btn btn-outline-dark btn-sm me-2 active" data-cat="all">All</button>
-    <button class="btn btn-outline-dark btn-sm me-2" data-cat="tech">Tech</button>
-    <button class="btn btn-outline-dark btn-sm me-2" data-cat="testing">Testing</button>
-    <button class="btn btn-outline-dark btn-sm" data-cat="other">Other</button>
+<div class="container mb-3">
+  <div
+    id="categories"
+    class="d-flex justify-content-start gap-2 flex-wrap"
+  >
+    <button class="btn btn-outline-dark btn-sm active" data-cat="all">
+      All
+    </button>
+    <button class="btn btn-outline-dark btn-sm" data-cat="tech">
+      Tech
+    </button>
+    <button class="btn btn-outline-dark btn-sm" data-cat="testing">
+      Testing
+    </button>
+    <button class="btn btn-outline-dark btn-sm" data-cat="other">
+      Other
+    </button>
   </div>
 </div>
 
 <!-- ======================
      POSTS SECTION
 ====================== -->
-<section class="container my-5 flex-grow-1">
+<section class="container my-4 flex-grow-1">
   <div id="posts" class="row g-4">
     <!-- Posts load via blog.js -->
   </div>
@@ -71,7 +81,7 @@
 <!-- ======================
      BOTTOM AD
 ====================== -->
-<div class="container">
+<div class="container my-4">
   <div class="ad-container">
     <span class="ad-label">Advertisement</span>
     <div class="ad-box">AdSense Ad Here</div>
@@ -79,13 +89,11 @@
 </div>
 
 <!-- ======================
-     FOOTER (FIXED)
+     FOOTER
 ====================== -->
 <footer class="bg-dark text-white py-4 mt-auto">
   <div class="container text-center">
-    <p class="mb-1">&copy; 2026 My Earning Blog</p>
-
-    <!-- Footer buttons -->
+    <p class="mb-1">&copy; 2025 My Earning Blog</p>
     <div class="mt-2">
       <a href="#" class="text-white me-3">About</a>
       <a href="#" class="text-white me-3">Contact</a>
