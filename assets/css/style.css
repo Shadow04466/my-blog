@@ -1,259 +1,53 @@
-/* ===============================
-   GLOBAL
-=============================== */
-
-body {
-  background: #ffffff;
-  color: #222;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+.blog-post {
+  max-width: 800px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* ===============================
-   CATEGORY BUTTONS (PREMIUM)
-=============================== */
-
-#categories {
-  margin-top: -10px;
-}
-
-#categories .btn {
-  border-radius: 999px;
-  padding: 8px 22px;
-  font-weight: 500;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #333;
-  transition: all .25s ease;
-}
-
-#categories .btn:hover {
-  background: #111;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-#categories .btn.active {
-  background: linear-gradient(135deg, #111, #333);
-  color: #fff;
-  border-color: transparent;
-}
-
-/* ===============================
-   BLOG POST GRID
-=============================== */
-
-.blog-card {
-  border: none;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.blog-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 45px rgba(0,0,0,0.15);
-}
-
-.blog-card img {
-  height: 220px;
-  width: 100%;
-  object-fit: cover;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-}
-
-.blog-card .card-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.blog-card .card-text {
-  font-size: 15px;
-  color: #555;
-}
-
-/* ===============================
-   FEATURED POST
-=============================== */
-
-.featured-card {
-  border: none;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-  transition: transform .3s ease, box-shadow .3s ease;
-}
-
-.featured-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 70px rgba(0,0,0,0.18);
-}
-
-.featured-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.featured-card h3 {
+.blog-title {
+  font-size: 2.4rem;
   font-weight: 700;
+  margin-bottom: 10px;
 }
 
-/* ===============================
-   SINGLE POST PAGE
-=============================== */
+.blog-meta {
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+}
 
-.post-single img {
-  max-width: 100%;
+.blog-featured-img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
   border-radius: 12px;
-  margin: 25px 0;
+  margin: 20px 0;
 }
 
-.post-single p {
-  font-size: 18px;
+.blog-content {
+  font-size: 1.1rem;
   line-height: 1.8;
   color: #333;
 }
 
-/* ===============================
-   ADSENSE PLACEHOLDERS
-=============================== */
-
-.ad-box {
-  background: #f7f7f7;
-  border: 1px dashed #ccc;
-  padding: 25px;
-  text-align: center;
-  margin: 30px 0;
-  border-radius: 10px;
-  color: #777;
-  font-size: 14px;
+.blog-content p {
+  margin-bottom: 1.2rem;
 }
 
-.ad-box small {
-  display: block;
-  margin-top: 8px;
-  color: #999;
+.blog-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
-/* ===============================
-   PAGE TRANSITIONS
-=============================== */
-
-body {
-  animation: fadePage .6s ease-in-out;
+.blog-content ul {
+  padding-left: 20px;
+  margin-bottom: 1.5rem;
 }
 
-@keyframes fadePage {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===============================
-   CARD STAGGER ANIMATION
-=============================== */
-
-.blog-card,
-.featured-card {
-  opacity: 0;
-  animation: cardFade .6s ease forwards;
-}
-
-.blog-card:nth-child(1) { animation-delay: .1s; }
-.blog-card:nth-child(2) { animation-delay: .2s; }
-.blog-card:nth-child(3) { animation-delay: .3s; }
-.featured-card { animation-delay: .4s; }
-
-@keyframes cardFade {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===============================
-   LINK HOVER MICRO EFFECT
-=============================== */
-
-a {
-  transition: color .2s ease;
-}
-
-a:hover {
-  color: #0d6efd;
-}
-
-/* ===============================
-   SEO + READABILITY BOOST
-=============================== */
-
-/* Limit line length (VERY IMPORTANT) */
-.post-single,
-.blog-card .card-text {
-  max-width: 72ch;     /* Google recommended */
-}
-
-/* Better paragraph spacing */
-.post-single p {
-  margin-bottom: 1.2em;
-}
-
-/* Headings hierarchy */
-.post-single h1,
-.post-single h2,
-.post-single h3 {
-  line-height: 1.3;
-  margin-top: 1.6em;
-  margin-bottom: .6em;
-}
-
-/* Improve link readability */
-.post-single a {
-  color: #0d6efd;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.post-single a:hover {
-  text-decoration-thickness: 2px;
-}
-
-/* Bullet list readability */
-.post-single ul,
-.post-single ol {
-  padding-left: 1.4em;
-  margin-bottom: 1.2em;
-}
-
-.post-single li {
-  margin-bottom: .4em;
-}
-
-/* Quote styling (SEO + UX) */
-.post-single blockquote {
-  border-left: 4px solid #111;
-  padding-left: 1em;
-  margin: 1.5em 0;
-  color: #555;
-  font-style: italic;
-}
-
-/* Mobile text tuning */
-@media (max-width: 768px) {
-  .post-single p {
-    font-size: 17px;
-  }
+.blog-content li {
+  margin-bottom: 8px;
 }
