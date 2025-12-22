@@ -1,32 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Admin Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Admin Dashboard</h1>
+<nav class="navbar navbar-dark bg-dark px-4">
+  <span class="navbar-brand">Admin Dashboard</span>
+  <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+</nav>
 
-<section class="admin-form">
-  <input id="title" placeholder="Post Title">
-  <input id="image" placeholder="Image URL">
-  <textarea id="content" placeholder="Write post content..."></textarea>
+<div class="container my-4">
 
-  <select id="status">
-    <option value="publish">Publish</option>
-    <option value="draft">Draft</option>
-  </select>
+  <!-- ADD POST CARD -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header fw-bold">
+      Add / Edit Blog Post
+    </div>
 
-  <button id="saveBtn">Save Post</button>
-</section>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <input id="title" class="form-control" placeholder="Post Title">
+        </div>
 
-<hr>
+        <div class="col-md-6">
+          <input id="image" class="form-control" placeholder="Image URL">
+        </div>
 
-<h2>All Posts</h2>
-<div id="postList"></div>
+        <div class="col-12">
+          <textarea id="content" class="form-control" rows="5" placeholder="Write post content..."></textarea>
+        </div>
 
-<button onclick="logout()">Logout</button>
+        <div class="col-md-4">
+          <select id="status" class="form-select">
+            <option value="publish">Publish</option>
+            <option value="draft">Draft</option>
+          </select>
+        </div>
+
+        <div class="col-md-8 text-end">
+          <button id="saveBtn" class="btn btn-primary px-4">
+            Save Post
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSTS LIST -->
+  <div class="card shadow-sm">
+    <div class="card-header fw-bold">
+      All Posts
+    </div>
+
+    <div class="card-body" id="postList">
+      <!-- Posts load here -->
+    </div>
+  </div>
+
+</div>
 
 <script type="module" src="../assets/js/admin.js"></script>
 </body>
