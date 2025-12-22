@@ -17,8 +17,24 @@ let allPosts = [];
 
 async function loadPosts() {
   const snap = await getDocs(collection(db, "posts"));
+  allPosts = [];                 // 🔹 reset memory
   postsBox.innerHTML = "";
+
+  snap.forEach(d => {
+    const p = d.data();
+
+    if (p.status !== "publish") return;
+
+    // 🔥 YAHAN paste hota hai
+    allPosts.push({
+      id: d.id,
+      ...p
+    });
+  });
+
+  renderPosts(allPosts);          // 🔹 pehli baar sab show
 }
+
 
 /* ======================
    LOAD POSTS (INDEX)
