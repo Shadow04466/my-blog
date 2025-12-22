@@ -42,15 +42,16 @@ function renderPosts(posts) {
     return;
   }
 
-  posts.forEach(p => {
+  // 🔹 First 3 normal cards
+  posts.slice(0, 3).forEach(p => {
     postsBox.innerHTML += `
-      <div class="col-sm-10 col-md-6 col-lg-4">
+      <div class="col-md-4">
         <div class="card h-100 blog-card">
           ${p.image ? `<img src="${p.image}" class="card-img-top">` : ""}
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">${p.title}</h5>
             <p class="card-text flex-grow-1">
-              ${p.content.substring(0,120)}...
+              ${p.content.substring(0,100)}...
             </p>
             <a href="post.html?id=${p.id}" class="btn btn-outline-primary mt-auto">
               Read More →
@@ -60,6 +61,34 @@ function renderPosts(posts) {
       </div>
     `;
   });
+
+  // 🔥 Featured full-width card (4th post)
+  if (posts[3]) {
+    const p = posts[3];
+    postsBox.innerHTML += `
+      <div class="col-12">
+        <div class="card featured-card mt-4">
+          <div class="row g-0">
+            <div class="col-md-6">
+              ${p.image ? `<img src="${p.image}" class="img-fluid featured-img">` : ""}
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="card-body">
+                <span class="badge bg-dark mb-2">Featured</span>
+                <h3 class="card-title">${p.title}</h3>
+                <p class="card-text">
+                  ${p.content.substring(0,180)}...
+                </p>
+                <a href="post.html?id=${p.id}" class="btn btn-dark">
+                  Read Full Article →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
 }
 
 /* ======================
