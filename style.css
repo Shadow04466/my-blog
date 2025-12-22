@@ -1,0 +1,44 @@
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+  margin: 0;
+}
+
+.dark {
+  background: #121212;
+  color: white;
+}
+
+header {
+  background: #000;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+input, textarea, select {
+  width: 90%;
+  padding: 10px;
+  margin: 8px;
+}
+
+.post {
+  background: white;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.dark .post {
+  background: #1e1e1e;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+textarea {
+  direction: rtl;
+  height: 140px;
+}
