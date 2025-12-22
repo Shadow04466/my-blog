@@ -1,58 +1,16 @@
-/* ===== BLOG POST GRID ===== */
+/* ===============================
+   GLOBAL
+=============================== */
 
-.blog-card {
-  border: none;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  transition: transform .25s ease, box-shadow .25s ease;
+body {
+  background: #ffffff;
+  color: #222;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.blog-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 45px rgba(0,0,0,0.15);
-}
-
-.blog-card img {
-  height: 220px;
-  object-fit: cover;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-}
-
-.blog-card .card-title {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.blog-card .card-text {
-  font-size: 15px;
-  color: #555;
-}
-
-#categories .btn {
-  padding: 8px 20px;
-  border-radius: 30px;
-  font-weight: 500;
-}
-
-#categories .btn.active {
-  background: #111;
-  color: #fff;
-}
-
-/* ===== SINGLE POST ===== */
-
-.post-single img {
-  max-width: 100%;
-  border-radius: 10px;
-  margin: 20px 0;
-}
-
-.post-single p {
-  font-size: 18px;
-  line-height: 1.8;
-}
-/* ===== CATEGORY BUTTONS (PREMIUM) ===== */
+/* ===============================
+   CATEGORY BUTTONS (PREMIUM)
+=============================== */
 
 #categories {
   margin-top: -10px;
@@ -80,12 +38,51 @@
   border-color: transparent;
 }
 
-/* ===== FEATURED POST ===== */
+/* ===============================
+   BLOG POST GRID
+=============================== */
+
+.blog-card {
+  border: none;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 45px rgba(0,0,0,0.15);
+}
+
+.blog-card img {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.blog-card .card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.blog-card .card-text {
+  font-size: 15px;
+  color: #555;
+}
+
+/* ===============================
+   FEATURED POST
+=============================== */
 
 .featured-card {
   border: none;
   border-radius: 16px;
   overflow: hidden;
+  background: #fff;
   box-shadow: 0 20px 50px rgba(0,0,0,0.12);
   transition: transform .3s ease, box-shadow .3s ease;
 }
@@ -104,12 +101,26 @@
 .featured-card h3 {
   font-weight: 700;
 }
-Firebase → loadPosts()
-        → forEach post
-        → allPosts.push()
-        → renderPosts(allPosts)
 
-/* ===== ADSENSE AD BLOCKS ===== */
+/* ===============================
+   SINGLE POST PAGE
+=============================== */
+
+.post-single img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.post-single p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* ===============================
+   ADSENSE PLACEHOLDERS
+=============================== */
 
 .ad-box {
   background: #f7f7f7;
