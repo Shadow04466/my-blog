@@ -1,4 +1,4 @@
-// ================= FIREBASE SETUP =================
+// ================= FIREBASE (INIT ONLY – ABHI USE NAHI) =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
 
@@ -15,21 +15,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
-// ================= BLOG DATA =================
+// ================= BLOG DATA (LOCAL STORAGE) =================
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
-// ================= LOGIN (DISABLED FOR NOW) =================
+// ================= LOGIN (DISABLED) =================
 function login() {
-  // login system temporarily disabled
+  // login system disabled for now
 }
-
-// 🔕 redirect also disabled
-// if (location.pathname.includes("admin") && !localStorage.getItem("login")) {
-//   location.href = "login.html";
-// }
 
 // ================= ADD POST =================
 function addPost() {
+  if (!title.value || !content.value) {
+    alert("Title aur content likho");
+    return;
+  }
+
   posts.push({
     title: title.value,
     image: image.value,
@@ -39,9 +39,14 @@ function addPost() {
   });
 
   localStorage.setItem("posts", JSON.stringify(posts));
+
+  title.value = "";
+  image.value = "";
+  content.value = "";
+
   alert("Post Published!");
+  showPosts();
 }
-window.addPost = addPost;
 
 // ================= SHOW POSTS =================
 function showPosts() {
@@ -56,7 +61,7 @@ function showPosts() {
         ${p.image ? `<img src="${p.image}">` : ""}
         <p>${p.content}</p>
 
-        <input placeholder="Write comment..." 
+        <input placeholder="Write comment..."
                onkeypress="addComment(event, ${i})">
         <div>${p.comments.join("<br>")}</div>
       </div>
@@ -74,10 +79,10 @@ function addComment(e, i) {
 }
 
 // ================= FILTER =================
-function filterPosts(c) {
+function filterPosts(cat) {
   document.querySelectorAll(".post").forEach(p => {
     p.style.display =
-      c === "all" || p.dataset.category === c ? "block" : "none";
+      cat === "all" || p.dataset.category === cat ? "block" : "none";
   });
 }
 
@@ -96,6 +101,12 @@ function toggleDark() {
   document.body.classList.toggle("dark");
 }
 
+// ================= EXPOSE FUNCTIONS (VERY IMPORTANT) =================
+window.addPost = addPost;
+window.addComment = addComment;
+window.filterPosts = filterPosts;
+window.toggleDark = toggleDark;
+window.login = login;
+
 // ================= INIT =================
 showPosts();
-
