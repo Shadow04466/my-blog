@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Admin Panel</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Add Blog Post</h2>
+<div class="admin-box">
+  <h2>Add New Post</h2>
 
-<input id="title" placeholder="Title">
-<input id="image" placeholder="Image URL">
-<select id="category">
-  <option value="stories">Stories</option>
-  <option value="islamic">Islamic</option>
-  <option value="tech">Tech</option>
-</select>
+  <input id="title" placeholder="Post Title">
+  <input id="image" placeholder="Image URL (optional)">
 
-<textarea id="content" placeholder="Write blog here..."></textarea>
+  <select id="category">
+    <option value="stories">Stories</option>
+    <option value="islamic">Islamic</option>
+    <option value="tech">Tech</option>
+  </select>
 
-<button onclick="addPost()">Publish</button>
+  <textarea id="content" placeholder="Write your post..."></textarea>
+
+  <button onclick="addPost()">Publish Post</button>
+</div>
 
 <script type="module" src="script.js"></script>
 </body>
 </html>
-
