@@ -1,3 +1,4 @@
+let allPosts = [];
 import { db } from "./firebase.js";
 import {
   collection,
