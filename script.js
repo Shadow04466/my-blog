@@ -1,4 +1,4 @@
-// ================= FIREBASE (INIT ONLY – ABHI USE NAHI) =================
+// ================= FIREBASE INIT (ABHI SIRF INIT) =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
 
@@ -15,34 +15,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
-// ================= BLOG DATA (LOCAL STORAGE) =================
+// ================= LOCAL STORAGE DATA =================
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
 // ================= LOGIN (DISABLED) =================
 function login() {
-  // login system disabled for now
+  // login disabled for now
 }
 
 // ================= ADD POST =================
 function addPost() {
-  if (!title.value || !content.value) {
-    alert("Title aur content likho");
+  const titleEl = document.getElementById("title");
+  const imageEl = document.getElementById("image");
+  const categoryEl = document.getElementById("category");
+  const contentEl = document.getElementById("content");
+
+  if (!titleEl.value || !contentEl.value) {
+    alert("Title aur content zaroori hai");
     return;
   }
 
   posts.push({
-    title: title.value,
-    image: image.value,
-    category: category.value,
-    content: content.value,
+    title: titleEl.value,
+    image: imageEl.value,
+    category: categoryEl.value,
+    content: contentEl.value,
     comments: []
   });
 
   localStorage.setItem("posts", JSON.stringify(posts));
 
-  title.value = "";
-  image.value = "";
-  content.value = "";
+  titleEl.value = "";
+  imageEl.value = "";
+  contentEl.value = "";
 
   alert("Post Published!");
   showPosts();
@@ -50,7 +55,7 @@ function addPost() {
 
 // ================= SHOW POSTS =================
 function showPosts() {
-  let box = document.getElementById("posts");
+  const box = document.getElementById("posts");
   if (!box) return;
 
   box.innerHTML = "";
@@ -87,21 +92,24 @@ function filterPosts(cat) {
 }
 
 // ================= SEARCH =================
-document.getElementById("search")?.addEventListener("keyup", function () {
-  let v = this.value.toLowerCase();
-  document.querySelectorAll(".post").forEach(p => {
-    p.style.display = p.innerText.toLowerCase().includes(v)
-      ? "block"
-      : "none";
+const searchInput = document.getElementById("search");
+if (searchInput) {
+  searchInput.addEventListener("keyup", function () {
+    const v = this.value.toLowerCase();
+    document.querySelectorAll(".post").forEach(p => {
+      p.style.display = p.innerText.toLowerCase().includes(v)
+        ? "block"
+        : "none";
+    });
   });
-});
+}
 
 // ================= DARK MODE =================
 function toggleDark() {
   document.body.classList.toggle("dark");
 }
 
-// ================= EXPOSE FUNCTIONS (VERY IMPORTANT) =================
+// ================= EXPOSE FUNCTIONS (CRITICAL PART) =================
 window.addPost = addPost;
 window.addComment = addComment;
 window.filterPosts = filterPosts;
