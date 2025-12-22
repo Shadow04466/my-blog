@@ -27,7 +27,7 @@ async function loadPosts() {
   snap.forEach(d => {
     const p = d.data();
 
-    // ✅ STATUS CHECK (FIXED)
+    // ✅ STATUS CHECK
     if (!p.status || p.status.toLowerCase() !== "publish") return;
 
     allPosts.push({
@@ -40,35 +40,30 @@ async function loadPosts() {
 }
 
 /* ======================
-   RENDER POSTS
+   RENDER POSTS (HOME)
 ====================== */
 function renderPosts(posts) {
   postsBox.innerHTML = "";
 
   if (posts.length === 0) {
-    postsBox.innerHTML = `<p class="text-center text-muted">No posts found</p>`;
+    postsBox.innerHTML =
+      `<p class="text-center text-muted">No posts found</p>`;
     return;
   }
 
-  // 🔹 First 3 normal cards
+  // 🔹 First 3 cards
   posts.slice(0, 3).forEach(p => {
     postsBox.innerHTML += `
-      <div class="col-12">
-        <div class="ad-box">
-          Advertisement
-          <small>In-feed Ad</small>
-        </div>
-      </div>
-
-      <div class="col-md-4">
+      <div class="col-md-4 mb-4">
         <div class="card h-100 blog-card">
           ${p.image ? `<img src="${p.image}" class="card-img-top">` : ""}
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">${p.title}</h5>
             <p class="card-text flex-grow-1">
-              ${p.content.substring(0, 100)}...
+              ${stripHtml(p.content).substring(0, 120)}...
             </p>
-            <a href="post.html?id=${p.id}" class="btn btn-outline-primary mt-auto">
+            <a href="post.html?id=${p.id}"
+               class="btn btn-outline-primary mt-auto">
               Read More →
             </a>
           </div>
@@ -81,18 +76,20 @@ function renderPosts(posts) {
   if (posts[3]) {
     const p = posts[3];
     postsBox.innerHTML += `
-      <div class="col-12">
-        <div class="card featured-card mt-4">
+      <div class="col-12 mt-4">
+        <div class="card featured-card">
           <div class="row g-0">
             <div class="col-md-6">
-              ${p.image ? `<img src="${p.image}" class="img-fluid featured-img">` : ""}
+              ${p.image ? `
+                <img src="${p.image}" class="img-fluid featured-img">
+              ` : ""}
             </div>
             <div class="col-md-6 d-flex align-items-center">
               <div class="card-body">
                 <span class="badge bg-dark mb-2">Featured</span>
-                <h3 class="card-title">${p.title}</h3>
-                <p class="card-text">
-                  ${p.content.substring(0, 180)}...
+                <h3>${p.title}</h3>
+                <p>
+                  ${stripHtml(p.content).substring(0, 200)}...
                 </p>
                 <a href="post.html?id=${p.id}" class="btn btn-dark">
                   Read Full Article →
@@ -145,22 +142,51 @@ async function loadSinglePost(id) {
 
   const p = snap.data();
 
+  // SEO
   document.getElementById("pageTitle").innerText = p.title;
   document.getElementById("metaDesc").content =
-    p.content.substring(0, 150);
+    stripHtml(p.content).substring(0, 150);
 
+  // ✅ PROFESSIONAL BLOG LAYOUT
   postBox.innerHTML = `
-    <h1>${p.title}</h1>
-    ${p.image ? `<img src="${p.image}" class="img-fluid mb-3">` : ""}
-    <p>${p.content}</p>
+    <article class="blog-post">
+
+      <header class="blog-header">
+        <h1 class="blog-title">${p.title}</h1>
+
+        <div class="blog-meta">
+          <span>✍️ Admin</span>
+          <span>📅 ${p.createdAt?.toDate().toDateString() || ""}</span>
+        </div>
+
+        ${p.image ? `
+          <img src="${p.image}" class="blog-featured-img">
+        ` : ""}
+      </header>
+
+      <div class="blog-content">
+        ${p.content}
+      </div>
+
+    </article>
   `;
 
+  // Likes
   document.getElementById("likeCount").innerText = p.likes || 0;
 
   document.getElementById("likeBtn").onclick = async () => {
     await updateDoc(ref, { likes: increment(1) });
     document.getElementById("likeCount").innerText++;
   };
+}
+
+/* ======================
+   HELPERS
+====================== */
+function stripHtml(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
 }
 
 /* ======================
