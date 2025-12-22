@@ -1,4 +1,3 @@
-let allPosts = [];
 import { db } from "./firebase.js";
 import {
   collection,
@@ -14,6 +13,12 @@ const postBox = document.getElementById("post");
 const categoryBox = document.getElementById("categories");
 
 let allPosts = [];
+
+
+async function loadPosts() {
+  const snap = await getDocs(collection(db, "posts"));
+  postsBox.innerHTML = "";
+}
 
 /* ======================
    LOAD POSTS (INDEX)
