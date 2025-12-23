@@ -14,10 +14,9 @@ import {
 ====================== */
 const titleInput = document.getElementById("title");
 const imageInput = document.getElementById("image");
-const contentInput = document.getElementById("content");
 const statusSelect = document.getElementById("status");
 const saveBtn = document.getElementById("saveBtn");
-const postsBox = document.getElementById("postsContainer"); // ✅ NEW ID
+const postsBox = document.getElementById("postsContainer");
 
 let editId = null;
 
@@ -25,17 +24,9 @@ let editId = null;
    LOAD POSTS
 ====================== */
 async function loadPosts() {
-  console.log("loadPosts running...");
-
-  if (!postsBox) {
-    console.error("❌ postsContainer NOT FOUND");
-    return;
-  }
-
   postsBox.innerHTML = "";
 
   const snap = await getDocs(collection(db, "posts"));
-  console.log("Posts found:", snap.size);
 
   if (snap.size === 0) {
     postsBox.innerHTML = "<p class='text-muted'>No posts found</p>";
@@ -63,22 +54,25 @@ async function loadPosts() {
 }
 
 /* ======================
-   SAVE POST
+   SAVE / UPDATE POST
 ====================== */
 saveBtn.addEventListener("click", async () => {
   const title = titleInput.value.trim();
   const image = imageInput.value.trim();
-  const content = contentInput.value.trim();
+  const content = tinymce.get("content").getContent().trim();
   const status = statusSelect.value;
 
   if (!title || !content) {
-    alert("Title & Content required");
+    alert("Title and Content required");
     return;
   }
 
   if (editId) {
     await updateDoc(doc(db, "posts", editId), {
-      title, image, content, status
+      title,
+      image,
+      content,
+      status
     });
     editId = null;
     saveBtn.innerText = "Save Post";
@@ -88,8 +82,8 @@ saveBtn.addEventListener("click", async () => {
       image,
       content,
       status,
-      likes: 0,
       category: "testing",
+      likes: 0,
       createdAt: serverTimestamp()
     });
   }
@@ -99,16 +93,17 @@ saveBtn.addEventListener("click", async () => {
 });
 
 /* ======================
-   EDIT
+   EDIT POST
 ====================== */
 window.editPost = async (id) => {
   const snap = await getDocs(collection(db, "posts"));
+
   snap.forEach(d => {
     if (d.id === id) {
       const p = d.data();
       titleInput.value = p.title || "";
       imageInput.value = p.image || "";
-      contentInput.value = p.content || "";
+      tinymce.get("content").setContent(p.content || "");
       statusSelect.value = p.status || "publish";
       editId = id;
       saveBtn.innerText = "Update Post";
@@ -117,10 +112,10 @@ window.editPost = async (id) => {
 };
 
 /* ======================
-   DELETE
+   DELETE POST
 ====================== */
 window.deletePost = async (id) => {
-  if (!confirm("Delete post?")) return;
+  if (!confirm("Delete this post?")) return;
   await deleteDoc(doc(db, "posts", id));
   loadPosts();
 };
@@ -131,7 +126,7 @@ window.deletePost = async (id) => {
 function clearForm() {
   titleInput.value = "";
   imageInput.value = "";
-  contentInput.value = "";
+  tinymce.get("content").setContent("");
   statusSelect.value = "publish";
 }
 
