@@ -1,61 +1,58 @@
-import { auth, db } from "./firebase.js";
+import { db } from "./firebase.js";
 import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
   doc,
+  deleteDoc,
   updateDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-const titleEl = document.getElementById("title");
-const imageEl = document.getElementById("image");
-const contentEl = document.getElementById("content");
-const statusEl = document.getElementById("status");
-const saveBtn = document.getElementById("saveBtn");
-const postList = document.getElementById("postList");
+/* ======================
+   DOM ELEMENTS
+====================== */
+const titleInput = document.getElementById("title");
+const imageInput = document.getElementById("image");
+const contentInput = document.getElementById("content");
+const statusSelect = document.getElementById("status");
+const saveBtn = document.getElementById("savePost");
+const postsBox = document.getElementById("postsList");
 
 let editId = null;
 
 /* ======================
-   AUTH PROTECTION
-====================== */
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    location.href = "login.html";
-  } else {
-    loadPosts();
-  }
-});
-
-/* ======================
-   ADD / UPDATE POST
+   SAVE / UPDATE POST
 ====================== */
 saveBtn.addEventListener("click", async () => {
-  if (!titleEl.value || !contentEl.value) {
-    alert("Title & content required");
+  const title = titleInput.value.trim();
+  const image = imageInput.value.trim();
+  const content = contentInput.value.trim();
+  const status = statusSelect.value;
+
+  if (!title || !content) {
+    alert("Title and Content are required");
     return;
   }
 
   if (editId) {
+    // UPDATE
     await updateDoc(doc(db, "posts", editId), {
-      title: titleEl.value,
-      image: imageEl.value,
-      content: contentEl.value,
-      status: statusEl.value
+      title,
+      image,
+      content,
+      status
     });
     editId = null;
+    saveBtn.innerText = "Save Post";
   } else {
+    // CREATE
     await addDoc(collection(db, "posts"), {
-      title: titleEl.value,
-      image: imageEl.value,
-      content: contentEl.value,
-      status: statusEl.value,
+      title,
+      image,
+      content,
+      status,
+      category: "testing",
       likes: 0,
       createdAt: serverTimestamp()
     });
@@ -69,31 +66,25 @@ saveBtn.addEventListener("click", async () => {
    LOAD POSTS
 ====================== */
 async function loadPosts() {
-  postList.innerHTML = "";
+  postsBox.innerHTML = "";
   const snap = await getDocs(collection(db, "posts"));
 
-  snap.forEach(docSnap => {
-    const p = docSnap.data();
+  snap.forEach(d => {
+    const p = d.data();
 
-    postList.innerHTML += `
-      <div class="post-item">
-        <div>
-          <b>${p.title}</b>
-          <small class="text-muted">(${p.status})</small>
-        </div>
-        <div>
-          <button class="btn btn-sm btn-warning"
-            onclick="editPost('${docSnap.id}', 
-              \`${p.title}\`,
-              \`${p.image || ""}\`,
-              \`${p.content}\`,
-              '${p.status}'
-            )">
+    postsBox.innerHTML += `
+      <div class="border rounded p-3 mb-3">
+        <strong>${p.title}</strong>
+        <small class="text-muted">(${p.status})</small>
+
+        <div class="mt-2">
+          <button class="btn btn-sm btn-outline-primary me-2"
+            onclick="editPost('${d.id}')">
             Edit
           </button>
 
           <button class="btn btn-sm btn-danger"
-            onclick="deletePost('${docSnap.id}')">
+            onclick="deletePost('${d.id}')">
             Delete
           </button>
         </div>
@@ -105,38 +96,43 @@ async function loadPosts() {
 /* ======================
    EDIT POST
 ====================== */
-window.editPost = function (id, title, image, content, status) {
-  editId = id;
-  titleEl.value = title;
-  imageEl.value = image;
-  contentEl.value = content;
-  statusEl.value = status;
+window.editPost = async (id) => {
+  const snap = await getDocs(collection(db, "posts"));
+  snap.forEach(d => {
+    if (d.id === id) {
+      const p = d.data();
+      titleInput.value = p.title || "";
+      imageInput.value = p.image || "";
+      contentInput.value = p.content || "";
+      statusSelect.value = p.status || "publish";
+
+      editId = id;
+      saveBtn.innerText = "Update Post";
+    }
+  });
 };
 
 /* ======================
    DELETE POST
 ====================== */
-window.deletePost = async function (id) {
-  if (!confirm("Delete this post?")) return;
-  await deleteDoc(doc(db, "posts", id));
-  loadPosts();
+window.deletePost = async (id) => {
+  if (confirm("Delete this post?")) {
+    await deleteDoc(doc(db, "posts", id));
+    loadPosts();
+  }
 };
 
 /* ======================
-   LOGOUT
-====================== */
-window.logout = function () {
-  signOut(auth).then(() => {
-    location.href = "login.html";
-  });
-};
-
-/* ======================
-   CLEAR FORM
+   HELPERS
 ====================== */
 function clearForm() {
-  titleEl.value = "";
-  imageEl.value = "";
-  contentEl.value = "";
-  statusEl.value = "publish";
+  titleInput.value = "";
+  imageInput.value = "";
+  contentInput.value = "";
+  statusSelect.value = "publish";
 }
+
+/* ======================
+   INIT
+====================== */
+loadPosts();
