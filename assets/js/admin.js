@@ -1,138 +1,57 @@
 import { db } from "./firebase.js";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  deleteDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp }
+from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-/* ======================
-   DOM ELEMENTS
-====================== */
-const titleInput = document.getElementById("title");
-const imageInput = document.getElementById("image");
-const contentInput = document.getElementById("content");
-const statusSelect = document.getElementById("status");
-const saveBtn = document.getElementById("savePost");
-const postsBox = document.getElementById("postsList");
+const quill = new Quill("#editor",{theme:"snow"});
+let editId=null;
 
-let editId = null;
-
-/* ======================
-   SAVE / UPDATE POST
-====================== */
-saveBtn.addEventListener("click", async () => {
-  const title = titleInput.value.trim();
-  const image = imageInput.value.trim();
-  const content = contentInput.value.trim();
-  const status = statusSelect.value;
-
-  if (!title || !content) {
-    alert("Title and Content are required");
-    return;
-  }
-
-  if (editId) {
-    // UPDATE
-    await updateDoc(doc(db, "posts", editId), {
-      title,
-      image,
-      content,
-      status
-    });
-    editId = null;
-    saveBtn.innerText = "Save Post";
-  } else {
-    // CREATE
-    await addDoc(collection(db, "posts"), {
-      title,
-      image,
-      content,
-      status,
-      category: "testing",
-      likes: 0,
-      createdAt: serverTimestamp()
-    });
-  }
-
-  clearForm();
-  loadPosts();
-});
-
-/* ======================
-   LOAD POSTS
-====================== */
-async function loadPosts() {
-  postsBox.innerHTML = "";
-  const snap = await getDocs(collection(db, "posts"));
-
-  snap.forEach(d => {
-    const p = d.data();
-
-    postsBox.innerHTML += `
-      <div class="border rounded p-3 mb-3">
-        <strong>${p.title}</strong>
-        <small class="text-muted">(${p.status})</small>
-
-        <div class="mt-2">
-          <button class="btn btn-sm btn-outline-primary me-2"
-            onclick="editPost('${d.id}')">
-            Edit
-          </button>
-
-          <button class="btn btn-sm btn-danger"
-            onclick="deletePost('${d.id}')">
-            Delete
-          </button>
-        </div>
-      </div>
-    `;
-  });
-}
-
-/* ======================
-   EDIT POST
-====================== */
-window.editPost = async (id) => {
-  const snap = await getDocs(collection(db, "posts"));
-  snap.forEach(d => {
-    if (d.id === id) {
-      const p = d.data();
-      titleInput.value = p.title || "";
-      imageInput.value = p.image || "";
-      contentInput.value = p.content || "";
-      statusSelect.value = p.status || "publish";
-
-      editId = id;
-      saveBtn.innerText = "Update Post";
-    }
-  });
+savePost.onclick=async()=>{
+ const data={
+  title:title.value,
+  image:image.value,
+  content:quill.root.innerHTML,
+  category:category.value,
+  status:status.value
+ };
+ if(editId){
+  await updateDoc(doc(db,"posts",editId),data);
+  editId=null;
+ }else{
+  await addDoc(collection(db,"posts"),{...data,likes:0,createdAt:serverTimestamp()});
+ }
+ load();
 };
 
-/* ======================
-   DELETE POST
-====================== */
-window.deletePost = async (id) => {
-  if (confirm("Delete this post?")) {
-    await deleteDoc(doc(db, "posts", id));
-    loadPosts();
-  }
-};
-
-/* ======================
-   HELPERS
-====================== */
-function clearForm() {
-  titleInput.value = "";
-  imageInput.value = "";
-  contentInput.value = "";
-  statusSelect.value = "publish";
+async function load(){
+ postsList.innerHTML="";
+ (await getDocs(collection(db,"posts"))).forEach(d=>{
+  postsList.innerHTML+=`
+  <div class="border p-2 mb-2">
+   ${d.data().title}
+   <button onclick="edit('${d.id}')">Edit</button>
+   <button onclick="del('${d.id}')">Delete</button>
+  </div>`;
+ });
 }
 
-/* ======================
-   INIT
-====================== */
-loadPosts();
+window.edit=async id=>{
+ (await getDocs(collection(db,"posts"))).forEach(d=>{
+  if(d.id===id){
+   title.value=d.data().title;
+   image.value=d.data().image;
+   category.value=d.data().category;
+   status.value=d.data().status;
+   quill.root.innerHTML=d.data().content;
+   editId=id;
+  }
+ });
+};
+
+window.del=async id=>{
+ if(confirm("Delete?")){
+  await deleteDoc(doc(db,"posts",id));
+  load();
+ }
+};
+
+load();
