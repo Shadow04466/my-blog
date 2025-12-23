@@ -5,67 +5,36 @@ import {
   getDoc,
   doc,
   updateDoc,
-  increment,
-  addDoc
+  increment
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-/* ======================
-   DOM ELEMENTS
-====================== */
 const postsBox = document.getElementById("posts");
 const postBox = document.getElementById("post");
-const trendingBox = document.getElementById("trending");
-
-let allPosts = [];
 
 /* ======================
-   LOAD POSTS (HOME)
+   HOME PAGE POSTS
 ====================== */
 async function loadPosts() {
   const snap = await getDocs(collection(db, "posts"));
-  allPosts = [];
+  postsBox.innerHTML = "";
 
   snap.forEach(d => {
     const p = d.data();
     if (p.status !== "publish") return;
 
-    allPosts.push({
-      id: d.id,
-      ...p
-    });
-  });
-
-  renderPosts();
-}
-
-/* ======================
-   RENDER POSTS (HOME)
-====================== */
-function renderPosts() {
-  if (!postsBox) return;
-
-  postsBox.innerHTML = "";
-
-  allPosts.forEach(p => {
     postsBox.innerHTML += `
       <div class="col-md-4">
-        <div class="card blog-card h-100">
+        <div class="card h-100 blog-card">
           ${p.image ? `<img src="${p.image}" class="card-img-top">` : ""}
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${p.title}</h5>
-            <p class="card-text">
-              ${stripHtml(p.content).substring(0,120)}...
-            </p>
-            <a href="post.html?id=${p.id}" class="mt-auto text-primary">
-              Read →
-            </a>
+          <div class="card-body">
+            <h5>${p.title}</h5>
+            <p>${stripHtml(p.content).substring(0,120)}...</p>
+            <a href="post.html?id=${d.id}">Read</a>
           </div>
         </div>
       </div>
     `;
   });
-
-  loadTrending();
 }
 
 /* ======================
@@ -76,35 +45,29 @@ async function loadSinglePost(id) {
   const snap = await getDoc(ref);
 
   if (!snap.exists()) {
-    postBox.innerHTML = "<p>Post not found</p>";
+    postBox.innerHTML = "Post not found";
     return;
   }
 
   const p = snap.data();
 
-  // SEO
   document.getElementById("pageTitle").innerText = p.title;
   document.getElementById("metaDesc").content =
     stripHtml(p.content).substring(0,150);
 
-  // ✅ IMAGE FIXED HERE
   postBox.innerHTML = `
     <article class="blog-post">
-
       <h1 class="blog-title">${p.title}</h1>
 
       ${
         p.image
-          ? `<img src="${p.image}"
-                 alt="${p.title}"
-                 class="blog-featured-img">`
+          ? `<img src="${p.image}" class="blog-featured-img">`
           : ""
       }
 
       <div class="blog-content">
         ${p.content}
       </div>
-
     </article>
   `;
 
@@ -117,15 +80,20 @@ async function loadSinglePost(id) {
 }
 
 /* ======================
-   TRENDING POSTS
+   HELPERS
 ====================== */
-function loadTrending() {
-  if (!trendingBox) return;
+function stripHtml(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+}
 
-  trendingBox.innerHTML = "";
+/* ======================
+   INIT
+====================== */
+if (postsBox) loadPosts();
 
-  [...allPosts]
-    .sort((a,b) => (b.likes || 0) - (a.likes || 0))
-    .slice(0,5)
-    .forEach(p => {
-      trendi
+if (postBox) {
+  const id = new URLSearchParams(location.search).get("id");
+  if (id) loadSinglePost(id);
+}
