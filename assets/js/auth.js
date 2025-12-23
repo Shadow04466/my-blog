@@ -1,16 +1,53 @@
 import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-loginBtn?.onclick = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-  .then(()=>location.href="dashboard.html")
-  .catch(e=>msg.innerText=e.message);
-};
+/* ======================
+   DOM ELEMENTS (SAFE)
+====================== */
+const loginBtn = document.getElementById("loginBtn");
+const msg = document.getElementById("msg");
 
-window.logout = ()=>signOut(auth).then(()=>location.href="login.html");
+/* ======================
+   LOGIN
+====================== */
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-onAuthStateChanged(auth,user=>{
-  if(!user && location.pathname.includes("dashboard"))
-    location.href="login.html";
+    if (!email || !password) {
+      msg.innerText = "Email and password required";
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "/admin/dashboard.html";
+    } catch (err) {
+      msg.innerText = err.message;
+    }
+  });
+}
+
+/* ======================
+   AUTH PROTECTION
+====================== */
+onAuthStateChanged(auth, user => {
+  const path = window.location.pathname;
+
+  if (!user && path.includes("/admin/dashboard.html")) {
+    window.location.href = "/admin/login.html";
+  }
 });
+
+/* ======================
+   LOGOUT
+====================== */
+window.logout = async () => {
+  await signOut(auth);
+  window.location.href = "/admin/login.html";
+};
