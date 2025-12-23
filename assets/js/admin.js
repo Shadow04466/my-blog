@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 import {
   collection,
   addDoc,
@@ -9,6 +9,10 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+import {
+  signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
 /* ======================
    DOM ELEMENTS
 ====================== */
@@ -16,42 +20,22 @@ const titleInput = document.getElementById("title");
 const imageInput = document.getElementById("image");
 const statusSelect = document.getElementById("status");
 const saveBtn = document.getElementById("saveBtn");
-const postsBox = document.getElementById("postsContainer");
+const postList = document.getElementById("postList");
 
 let editId = null;
 
 /* ======================
-   LOAD POSTS
+   TinyMCE INIT
 ====================== */
-async function loadPosts() {
-  postsBox.innerHTML = "";
-
-  const snap = await getDocs(collection(db, "posts"));
-
-  if (snap.size === 0) {
-    postsBox.innerHTML = "<p class='text-muted'>No posts found</p>";
-    return;
-  }
-
-  snap.forEach(d => {
-    const p = d.data();
-
-    postsBox.innerHTML += `
-      <div class="border rounded p-3 mb-3">
-        <strong>${p.title}</strong>
-        <small class="text-muted"> (${p.status})</small>
-
-        <div class="mt-2">
-          <button class="btn btn-sm btn-outline-primary me-2"
-            onclick="editPost('${d.id}')">Edit</button>
-
-          <button class="btn btn-sm btn-danger"
-            onclick="deletePost('${d.id}')">Delete</button>
-        </div>
-      </div>
-    `;
-  });
-}
+tinymce.init({
+  selector: '#content',
+  height: 420,
+  menubar: false,
+  plugins: 'lists link image code preview',
+  toolbar:
+    'undo redo | bold italic underline | h2 h3 | bullist numlist | link image | code preview',
+  branding: false
+});
 
 /* ======================
    SAVE / UPDATE POST
@@ -59,11 +43,11 @@ async function loadPosts() {
 saveBtn.addEventListener("click", async () => {
   const title = titleInput.value.trim();
   const image = imageInput.value.trim();
-  const content = tinymce.get("content").getContent().trim();
+  const content = tinymce.get('content').getContent();
   const status = statusSelect.value;
 
   if (!title || !content) {
-    alert("Title and Content required");
+    alert("Title and content required");
     return;
   }
 
@@ -93,18 +77,49 @@ saveBtn.addEventListener("click", async () => {
 });
 
 /* ======================
+   LOAD POSTS
+====================== */
+async function loadPosts() {
+  postList.innerHTML = "";
+  const snap = await getDocs(collection(db, "posts"));
+
+  snap.forEach(d => {
+    const p = d.data();
+
+    postList.innerHTML += `
+      <div class="border rounded p-3 mb-3">
+        <strong>${p.title}</strong>
+        <small class="text-muted">(${p.status})</small>
+
+        <div class="mt-2">
+          <button class="btn btn-sm btn-outline-primary me-2"
+            onclick="editPost('${d.id}')">
+            Edit
+          </button>
+
+          <button class="btn btn-sm btn-danger"
+            onclick="deletePost('${d.id}')">
+            Delete
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* ======================
    EDIT POST
 ====================== */
 window.editPost = async (id) => {
   const snap = await getDocs(collection(db, "posts"));
-
   snap.forEach(d => {
     if (d.id === id) {
       const p = d.data();
       titleInput.value = p.title || "";
       imageInput.value = p.image || "";
-      tinymce.get("content").setContent(p.content || "");
+      tinymce.get('content').setContent(p.content || "");
       statusSelect.value = p.status || "publish";
+
       editId = id;
       saveBtn.innerText = "Update Post";
     }
@@ -115,9 +130,18 @@ window.editPost = async (id) => {
    DELETE POST
 ====================== */
 window.deletePost = async (id) => {
-  if (!confirm("Delete this post?")) return;
-  await deleteDoc(doc(db, "posts", id));
-  loadPosts();
+  if (confirm("Delete this post?")) {
+    await deleteDoc(doc(db, "posts", id));
+    loadPosts();
+  }
+};
+
+/* ======================
+   LOGOUT
+====================== */
+window.logout = async () => {
+  await signOut(auth);
+  window.location.href = "login.html";
 };
 
 /* ======================
@@ -126,11 +150,11 @@ window.deletePost = async (id) => {
 function clearForm() {
   titleInput.value = "";
   imageInput.value = "";
-  tinymce.get("content").setContent("");
+  tinymce.get('content').setContent("");
   statusSelect.value = "publish";
 }
 
 /* ======================
    INIT
 ====================== */
-document.addEventListener("DOMContentLoaded", loadPosts);
+loadPosts();
