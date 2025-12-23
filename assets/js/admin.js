@@ -17,7 +17,7 @@ const imageInput = document.getElementById("image");
 const contentInput = document.getElementById("content");
 const statusSelect = document.getElementById("status");
 const saveBtn = document.getElementById("saveBtn");
-const postsBox = document.getElementById("postList");
+const postsBox = document.getElementById("postsContainer"); // ✅ NEW ID
 
 let editId = null;
 
@@ -28,48 +28,42 @@ async function loadPosts() {
   console.log("loadPosts running...");
 
   if (!postsBox) {
-    console.error("❌ postList not found in HTML");
+    console.error("❌ postsContainer NOT FOUND");
     return;
   }
 
   postsBox.innerHTML = "";
 
-  try {
-    const snap = await getDocs(collection(db, "posts"));
-    console.log("Posts found:", snap.size);
+  const snap = await getDocs(collection(db, "posts"));
+  console.log("Posts found:", snap.size);
 
-    if (snap.size === 0) {
-      postsBox.innerHTML = "<p class='text-muted'>No posts found</p>";
-      return;
-    }
-
-    snap.forEach(d => {
-      const p = d.data();
-
-      postsBox.innerHTML += `
-        <div class="border rounded p-3 mb-3">
-          <strong>${p.title}</strong>
-          <small class="text-muted"> (${p.status})</small>
-
-          <div class="mt-2">
-            <button class="btn btn-sm btn-outline-primary me-2"
-              onclick="editPost('${d.id}')">Edit</button>
-
-            <button class="btn btn-sm btn-danger"
-              onclick="deletePost('${d.id}')">Delete</button>
-          </div>
-        </div>
-      `;
-    });
-  } catch (err) {
-    console.error("Firestore error:", err);
-    postsBox.innerHTML =
-      "<p class='text-danger'>Error loading posts</p>";
+  if (snap.size === 0) {
+    postsBox.innerHTML = "<p class='text-muted'>No posts found</p>";
+    return;
   }
+
+  snap.forEach(d => {
+    const p = d.data();
+
+    postsBox.innerHTML += `
+      <div class="border rounded p-3 mb-3">
+        <strong>${p.title}</strong>
+        <small class="text-muted"> (${p.status})</small>
+
+        <div class="mt-2">
+          <button class="btn btn-sm btn-outline-primary me-2"
+            onclick="editPost('${d.id}')">Edit</button>
+
+          <button class="btn btn-sm btn-danger"
+            onclick="deletePost('${d.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  });
 }
 
 /* ======================
-   SAVE / UPDATE POST
+   SAVE POST
 ====================== */
 saveBtn.addEventListener("click", async () => {
   const title = titleInput.value.trim();
@@ -78,16 +72,13 @@ saveBtn.addEventListener("click", async () => {
   const status = statusSelect.value;
 
   if (!title || !content) {
-    alert("Title and Content are required");
+    alert("Title & Content required");
     return;
   }
 
   if (editId) {
     await updateDoc(doc(db, "posts", editId), {
-      title,
-      image,
-      content,
-      status
+      title, image, content, status
     });
     editId = null;
     saveBtn.innerText = "Save Post";
@@ -97,8 +88,8 @@ saveBtn.addEventListener("click", async () => {
       image,
       content,
       status,
-      category: "testing",
       likes: 0,
+      category: "testing",
       createdAt: serverTimestamp()
     });
   }
@@ -108,7 +99,7 @@ saveBtn.addEventListener("click", async () => {
 });
 
 /* ======================
-   EDIT POST
+   EDIT
 ====================== */
 window.editPost = async (id) => {
   const snap = await getDocs(collection(db, "posts"));
@@ -126,10 +117,10 @@ window.editPost = async (id) => {
 };
 
 /* ======================
-   DELETE POST
+   DELETE
 ====================== */
 window.deletePost = async (id) => {
-  if (!confirm("Delete this post?")) return;
+  if (!confirm("Delete post?")) return;
   await deleteDoc(doc(db, "posts", id));
   loadPosts();
 };
